@@ -1,0 +1,35 @@
+﻿@page "/"
+@using System.Timers;
+
+<PageTitle>Home</PageTitle>
+
+<style>
+  
+    .fixed-div {
+        width: @(canvas.Width)px; /* Set the desired width */
+        height: @(canvas.Height)px; /* Set the desired height */
+        position: fixed; /* Fix the position on the page */
+        top: @(canvas.y)px; /* Adjust the top position */
+        left: @(canvas.x)px; /* Adjust the left position */
+        background-color: lightblue; /* Optional: Set a background color */
+        border: 1px solid black; /* Optional: Set a border */
+    }
+
+    .circle {
+        display: block;
+        background: black;
+        border-radius: 50%;
+        height: 30px;
+        width: 30px;
+    }
+</style>
+
+
+<div class="fixed-div">
+    <figure class="circle" style="margin-left:@(ball.x)px; margin-top:@(ball.y)px"></figure>
+</div>
+
+<p>X-And-Width @(ball.x) / @(canvas.Width)</p>
+<p>Y-And-Height @(ball.y) / @(canvas.Height)</p>
+
+
