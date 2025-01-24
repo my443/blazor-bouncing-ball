@@ -1,4 +1,6 @@
 ﻿using BouncingBall.Models;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 
 
 namespace BouncingBall.Pages
@@ -7,6 +9,10 @@ namespace BouncingBall.Pages
     {
         Ball ball = new Ball();
         Canvas canvas = new Canvas();
+        Paddle paddle = new Paddle();
+
+        private string key;
+        private ElementReference divElement;
 
         private Timer _timer;
 
@@ -32,13 +38,39 @@ namespace BouncingBall.Pages
 
         public void ChangeDirectionIfNeeded()
         {
-          if (ball.y + ball.radius > canvas.Height || ball.y < 0)
+            if (ball.y + ball.radius > canvas.Height || ball.y < 0)
             {
                 ball.velocityY *= -1;
             }
-            if (ball.x + ball.radius > canvas.Width || ball.x - ball.radius < 0)
+            if (ball.x + ball.radius > canvas.Width || ball.x < 0)
             {
                 ball.velocityX *= -1;
+            }
+            if ((ball.x  > paddle.x && ball.x < paddle.x + 100) && ball.y  > 250)
+            {
+                ball.velocityY *= -1;
+            }
+        }
+        
+        private void HandleKeyDown(KeyboardEventArgs e)
+        {
+            key = $"{e.Key}";
+            if (key == "ArrowRight")
+            {
+                paddle.x += 10;
+            }
+
+            if (key == "ArrowLeft")
+            {
+                paddle.x -= 10;
+            }
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                await divElement.FocusAsync();
             }
         }
 

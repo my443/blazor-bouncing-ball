@@ -4,7 +4,6 @@
 <PageTitle>Home</PageTitle>
 
 <style>
-  
     .fixed-div {
         width: @(canvas.Width)px; /* Set the desired width */
         height: @(canvas.Height)px; /* Set the desired height */
@@ -21,15 +20,25 @@
         border-radius: 50%;
         height: 30px;
         width: 30px;
+        position: absolute;
+    }
+
+    .red-rectangle {
+        width: 100px;
+        height: 30px;
+        background-color: red;
+        position: absolute;
     }
 </style>
 
 
-<div class="fixed-div">
+<div @ref="divElement" class="fixed-div" tabindex="0" @onkeydown="HandleKeyDown">
     <figure class="circle" style="margin-left:@(ball.x)px; margin-top:@(ball.y)px"></figure>
+    <figure class="red-rectangle" style="margin-left:@(paddle.x)px; margin-top:250px"></figure>
 </div>
 
 <p>X-And-Width @(ball.x) / @(canvas.Width)</p>
 <p>Y-And-Height @(ball.y) / @(canvas.Height)</p>
+<p>Key Pressed: @(key)</p>
 
 
