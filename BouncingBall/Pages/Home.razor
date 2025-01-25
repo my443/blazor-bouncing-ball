@@ -1,5 +1,7 @@
 ﻿@page "/"
 @using System.Timers;
+@using Toolbelt.Blazor.Gamepad
+@inject GamepadList GamePadList
 
 <PageTitle>Home</PageTitle>
 
@@ -40,5 +42,24 @@
 <p>X-And-Width @(ball.x) / @(canvas.Width)</p>
 <p>Y-And-Height @(ball.y) / @(canvas.Height)</p>
 <p>Key Pressed: @(key)</p>
+
+@if (this._gamepad != null)
+{
+    <p>Axes</p>
+    <ul>
+        @foreach (var ax in _gamepad.Axes)
+        {
+            <li>@ax.ToString() @ax.ToString("#,0.0")</li>
+        }
+    </ul>
+
+    <p>Buttons</p>
+    <ul>
+        @foreach (var button in _gamepad.Buttons)
+        {
+            <li>@button.Pressed (@button.Value)</li>
+        }
+    </ul>
+}
 
 

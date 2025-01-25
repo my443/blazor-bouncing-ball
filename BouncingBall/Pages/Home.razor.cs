@@ -1,6 +1,7 @@
 ﻿using BouncingBall.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Toolbelt.Blazor.Gamepad;
 
 
 namespace BouncingBall.Pages
@@ -15,6 +16,7 @@ namespace BouncingBall.Pages
         private ElementReference divElement;
 
         private Timer _timer;
+        private Gamepad? _gamepad;
 
         protected override void OnInitialized()
         {
@@ -30,10 +32,34 @@ namespace BouncingBall.Pages
 
         public void MoveBall(object state)
         {
+            gamepadMovement();
             ChangeDirectionIfNeeded();
             ball.x += ball.velocityX;
             ball.y += ball.velocityY;
             StateHasChanged();
+        }
+
+        private async void gamepadMovement()
+        {
+            var gamepads = await GamePadList.GetGamepadsAsync();
+            _gamepad = gamepads.FirstOrDefault();
+            if (_gamepad != null)
+                if (_gamepad.Axes.Count > 2)
+                {
+                    if (Math.Round(_gamepad.Axes[2], 1) > 0)
+                    {
+                        moveRight();
+                    }
+                    if (Math.Round(_gamepad.Axes[2], 1) < 0)
+                    {
+                        moveLeft();
+                    }
+                }
+            //else if (_gamepad.Axes[4] > 0)
+            //{
+            //    moveRight();
+            //}
+            await this.InvokeAsync(() => this.StateHasChanged());
         }
 
         public void ChangeDirectionIfNeeded()
@@ -57,15 +83,31 @@ namespace BouncingBall.Pages
             key = $"{e.Key}";
             if (key == "ArrowRight")
             {
-                paddle.x += 10;
+                moveRight();
             }
 
             if (key == "ArrowLeft")
             {
-                paddle.x -= 10;
+                moveRight();
             }
         }
 
+        private void moveLeft()
+        {
+            paddle.x -= 10;
+            if (paddle.x < 0)
+            {
+                paddle.x = 0;
+            }
+        }
+        private void moveRight()
+        {
+            paddle.x += 10;
+            if (paddle.x > canvas.Width - 100)
+            {
+                paddle.x = canvas.Width - 100;
+            }
+        }   
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
