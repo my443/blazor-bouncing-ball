@@ -16,7 +16,10 @@ namespace BouncingBall.Pages
         private ElementReference divElement;
 
         private Timer _timer;
+        private Timer _keyTimer;
+
         private Gamepad? _gamepad;
+        private int _paddleY;
 
         protected override void OnInitialized()
         {
@@ -25,9 +28,10 @@ namespace BouncingBall.Pages
             ball.velocityX = 2;
             ball.velocityY = 2;
             ball.radius = 20;
+            _paddleY = canvas.Height - 50;
 
             _timer = new Timer(MoveBall, null, 0, 1);
-
+            _keyTimer = new Timer(CheckKeyPress, null, 0, 10);
         }
 
         public void MoveBall(object state)
@@ -72,15 +76,14 @@ namespace BouncingBall.Pages
             {
                 ball.velocityX *= -1;
             }
-            if ((ball.x  > paddle.x && ball.x < paddle.x + 100) && ball.y  > 250)
+            if ((ball.x  > paddle.x && ball.x < paddle.x + 100) && ball.y + ball.radius  > _paddleY)
             {
                 ball.velocityY *= -1;
             }
         }
-        
-        private void HandleKeyDown(KeyboardEventArgs e)
+
+        private async void CheckKeyPress(Object state)
         {
-            key = $"{e.Key}";
             if (key == "ArrowRight")
             {
                 moveRight();
@@ -88,8 +91,18 @@ namespace BouncingBall.Pages
 
             if (key == "ArrowLeft")
             {
-                moveRight();
+                moveLeft();
             }
+        }
+
+        private void HandleKeyUp(KeyboardEventArgs e)
+        {
+            key = null;
+        }
+
+        private async void HandleKeyDown(KeyboardEventArgs e)
+        {
+            key = $"{e.Key}";
         }
 
         private void moveLeft()

@@ -34,9 +34,9 @@
 </style>
 
 
-<div @ref="divElement" class="fixed-div" tabindex="0" @onkeydown="HandleKeyDown">
+<div @ref="divElement" class="fixed-div" tabindex="0" @onkeydown="HandleKeyDown" @onkeyup="HandleKeyUp">
     <figure class="circle" style="margin-left:@(ball.x)px; margin-top:@(ball.y)px"></figure>
-    <figure class="red-rectangle" style="margin-left:@(paddle.x)px; margin-top:250px"></figure>
+    <figure class="red-rectangle" style="margin-left:@(paddle.x)px; margin-top:@(_paddleY)px"></figure>
 </div>
 
 <p>X-And-Width @(ball.x) / @(canvas.Width)</p>
