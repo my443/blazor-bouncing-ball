@@ -1,12 +1,13 @@
 ﻿@inherits LayoutComponentBase
+@using Services
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+    @* <div class="sidebar"> *@
+    @*     <NavMenu /> *@
+    @* </div> *@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">@_ballx</a>
         </div>
 
         <article class="content px-4">
@@ -14,3 +15,27 @@
         </article>
     </main>
 </div>
+
+@code{
+    [Inject]
+    private ScoreboardService Scoreboard { get; set; }
+
+    private int _ballx;
+
+    protected override void OnInitialized()
+    {
+        Scoreboard.OnChange += UpdateBallX;
+        _ballx = Scoreboard.BallX;
+    }
+
+    private void UpdateBallX()
+    {
+        _ballx = Scoreboard.BallX;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        Scoreboard.OnChange -= StateHasChanged;
+    }
+}

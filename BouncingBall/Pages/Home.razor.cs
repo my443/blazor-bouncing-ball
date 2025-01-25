@@ -1,4 +1,5 @@
 ﻿using BouncingBall.Models;
+using BouncingBall.Services;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Toolbelt.Blazor.Gamepad;
@@ -8,6 +9,9 @@ namespace BouncingBall.Pages
 {
     public partial class Home
     {
+        [Inject]
+        private ScoreboardService Scoreboard { get; set; }
+
         Ball ball = new Ball();
         Canvas canvas = new Canvas();
         Paddle paddle = new Paddle();
@@ -38,8 +42,11 @@ namespace BouncingBall.Pages
         {
             gamepadMovement();
             ChangeDirectionIfNeeded();
+
             ball.x += ball.velocityX;
             ball.y += ball.velocityY;
+
+            UpdateScoreboard();
             StateHasChanged();
         }
 
@@ -129,6 +136,11 @@ namespace BouncingBall.Pages
             {
                 await divElement.FocusAsync();
             }
+        }
+
+        private void UpdateScoreboard()
+        {
+            Scoreboard.BallX = ball.x;
         }
 
     }
