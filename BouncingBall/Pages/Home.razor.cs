@@ -76,9 +76,11 @@ namespace BouncingBall.Pages
             {
                 ball.velocityX *= -1;
             }
-            if ((ball.x  > paddle.x && ball.x < paddle.x + 100) && ball.y + ball.radius  > _paddleY)
+            if ((ball.x  > paddle.x && ball.x < paddle.x + paddle.width) && ball.y + ball.radius  > _paddleY)
             {
                 ball.velocityY *= -1;
+                ball.y = _paddleY - ball.radius-2;
+
             }
         }
 
