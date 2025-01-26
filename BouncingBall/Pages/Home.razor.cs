@@ -211,7 +211,13 @@ namespace BouncingBall.Pages
 
         private void NewLevel() {
             Level++;
-            _gameVelocity++;
+            //_gameVelocity++;
+
+            if (Level % 3 == 0)
+            {
+                _gameVelocity = (Level / 3) + 2;
+            }
+
             ball.velocityX = _gameVelocity;
             ball.velocityY = _gameVelocity;
             GenerateBlocks((int)((Level / 2)* 10));
