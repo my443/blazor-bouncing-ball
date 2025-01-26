@@ -24,7 +24,10 @@ namespace BouncingBall.Pages
 
         private Gamepad? _gamepad;
         private int _paddleY;
-        
+        private bool _isPaused = true;
+        private int _gameVelocity = 2;
+
+
         // Blocks
         private int _squareSize = 30;
         private int _blockHeight;
@@ -36,8 +39,8 @@ namespace BouncingBall.Pages
         {
             ball.x = 20;
             ball.y = 20;
-            ball.velocityX = 2;
-            ball.velocityY = 2;
+            ball.velocityX = _gameVelocity;
+            ball.velocityY = _gameVelocity;
             ball.radius = 20;
             _paddleY = canvas.Height - 50;
             _blockHeight = (int)(canvas.Height / 2);
@@ -49,6 +52,8 @@ namespace BouncingBall.Pages
 
         public void MoveBall(object state)
         {
+            if (_isPaused) return;
+
             gamepadMovement();
             ChangeDirectionIfNeeded();
             CheckBlockCollisions();
@@ -206,12 +211,21 @@ namespace BouncingBall.Pages
 
         private void NewLevel() {
             Level++;
+            _gameVelocity++;
+            ball.velocityX = _gameVelocity;
+            ball.velocityY = _gameVelocity;
             GenerateBlocks((int)((Level / 2)* 10));
         }
 
         private void AddPoints()
         {
             Scoreboard.Score += 10;
+        }
+
+        private void TogglePause()
+        {
+            _isPaused = !_isPaused;
+            divElement.FocusAsync();
         }
     }
 }

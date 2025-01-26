@@ -49,6 +49,9 @@
     <figure class="red-rectangle" style="margin-left:@(paddle.x)px; margin-top:@(_paddleY)px"></figure>
 </div>
 
+<button @onclick="TogglePause">
+    @(_isPaused ? "Play Game" : "Pause")
+</button>
 <p>X-And-Width @(ball.x) / @(canvas.Width)</p>
 <p>Y-And-Height @(ball.y) / @(canvas.Height)</p>
 <p>Key Pressed: @(key)</p>
