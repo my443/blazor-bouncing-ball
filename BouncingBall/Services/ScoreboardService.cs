@@ -14,6 +14,9 @@
                 NotifyStateChanged();
             }
         }
+
+        public int Score { get; internal set; }
+
         private void NotifyStateChanged() => OnChange?.Invoke();
 
     }

@@ -24,6 +24,13 @@ namespace BouncingBall.Pages
 
         private Gamepad? _gamepad;
         private int _paddleY;
+        
+        // Blocks
+        private int _squareSize = 30;
+        private int _blockHeight;
+        private List<string> colours = new List<string> { "DarkRed", "DarkOrchid", "DarkOrange"};
+        private List<Block> _blocks = new List<Block>();
+        private int Level =1;
 
         protected override void OnInitialized()
         {
@@ -33,6 +40,8 @@ namespace BouncingBall.Pages
             ball.velocityY = 2;
             ball.radius = 20;
             _paddleY = canvas.Height - 50;
+            _blockHeight = (int)(canvas.Height / 2);
+            GenerateBlocks(10);
 
             _timer = new Timer(MoveBall, null, 0, 1);
             _keyTimer = new Timer(CheckKeyPress, null, 0, 10);
@@ -42,6 +51,7 @@ namespace BouncingBall.Pages
         {
             gamepadMovement();
             ChangeDirectionIfNeeded();
+            CheckBlockCollisions();
 
             ball.x += ball.velocityX;
             ball.y += ball.velocityY;
@@ -83,10 +93,10 @@ namespace BouncingBall.Pages
             {
                 ball.velocityX *= -1;
             }
-            if ((ball.x  > paddle.x && ball.x < paddle.x + paddle.width) && ball.y + ball.radius  > _paddleY)
+            if ((ball.x > paddle.x && ball.x < paddle.x + paddle.width) && ball.y + ball.radius > _paddleY)
             {
                 ball.velocityY *= -1;
-                ball.y = _paddleY - ball.radius-2;
+                ball.y = _paddleY - ball.radius - 2;
 
             }
         }
@@ -129,7 +139,7 @@ namespace BouncingBall.Pages
             {
                 paddle.x = canvas.Width - 100;
             }
-        }   
+        }
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
@@ -143,5 +153,65 @@ namespace BouncingBall.Pages
             Scoreboard.BallX = ball.x;
         }
 
+        private void GenerateBlocks(int numberOfBlocks)
+        {
+            var random = new Random();
+            int colourIndex = 0;
+
+            for (int i = 0; i < numberOfBlocks; i++)
+            {
+                _blocks.Add(new Block
+                {
+                    x = random.Next(0, canvas.Width - _squareSize),
+                    y = random.Next(0, canvas.Height - _squareSize - _blockHeight),
+                    Colour = colours[colourIndex]
+                });
+
+                if (colourIndex == colours.Count - 1)
+                {
+                    colourIndex = 0;
+                }
+                else
+                    colourIndex++;
+            }
+        }
+
+        private void CheckBlockCollisions()
+        {
+            foreach (var block in _blocks.ToList())
+            {
+                if (IsColliding(ball, block))
+                {
+                    // Handle collision
+                    ball.velocityY *= -1;
+                    _blocks.Remove(block);
+                    AddPoints();
+                    if (_blocks.Count == 0)
+                    {
+                        NewLevel();
+                        StateHasChanged();
+                    }
+                    break;
+                }
+            }
+        }
+
+        private bool IsColliding(Ball ball, Block block)
+        {
+            return ball.x + ball.radius > block.x &&
+                   ball.x - ball.radius < block.x + _squareSize &&
+                   ball.y + ball.radius > block.y &&
+                   ball.y - ball.radius < block.y + _squareSize;
+        }
+
+        private void NewLevel() {
+            Level++;
+            GenerateBlocks((int)((Level / 2)* 10));
+        }
+
+        private void AddPoints()
+        {
+            Scoreboard.Score += 10;
+        }
     }
 }
